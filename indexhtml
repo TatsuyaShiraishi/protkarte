@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>テキスト入力と保存</title>
+</head>
+<body>
+  <textarea id="inputArea" rows="10" cols="50"></textarea>
+  <button id="saveButton">保存</button>
+  <div id="savedText"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
