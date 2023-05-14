@@ -1,27 +1,24 @@
-const { MongoClient } = require('mongodb');
+const admin = require('firebase-admin');
+
+// Firebase Admin SDKの初期化
+admin.initializeApp({
+  credential: admin.credential.applicationDefault(),
+  // Firestoreの設定
+  databaseURL: 'https://<your-project-id>.firebaseio.com'
+});
 
 module.exports = async (req, res) => {
   if (req.method === 'POST') {
     const textData = req.body.text;
 
     try {
-      // MongoDBへの接続
-      const uri = 'mongodb://<ホスト名>:<ポート番号>/<データベース名>';
-      const client = new MongoClient(uri);
-      await client.connect();
-
-      // コレクションの取得
-      const database = client.db('<データベース名>');
-      const collection = database.collection('<コレクション名>');
+      // Firestoreへの参照を取得
+      const firestore = admin.firestore();
 
       // テキストデータの保存
-      const result = await collection.insertOne({ text: textData });
+      const docRef = await firestore.collection('texts').add({ text: textData });
 
-      // 接続のクローズ
-      await client.close();
-
-      // レスポンスを返す
-      res.status(200).json({ message: 'テキストが保存されました。', insertedId: result.insertedId });
+      res.status(200).json({ message: 'テキストが保存されました。', documentId: docRef.id });
     } catch (error) {
       console.error('データベースエラー:', error);
       res.status(500).json({ error: 'データベースエラーが発生しました。' });
